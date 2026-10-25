@@ -1,0 +1,196 @@
+
+@charset "UTF-8";
+
+/* 스크롤 영역과 고정 화면 */
+#intro {
+    height: calc(100dvh - var(--header-height) + var(--intro-scroll-distance));
+}
+
+.intro-sticky {
+    position: sticky;
+    top: var(--header-height);
+    height: calc(100dvh - var(--header-height));
+}
+
+.intro-stage {
+    /* JS가 갱신하는 애니메이션 값 */
+    --left-x: 27%;
+    --right-x: 43%;
+    --laptop-offset: 100dvh;
+    --description-opacity: 0;
+    --scroll-opacity: 1;
+
+    position: relative;
+    height: 100%;
+    overflow: clip;
+}
+
+/* 제목과 설명 */
+.intro-text {
+    position: absolute;
+    z-index: 1;
+}
+
+.intro-text-left {
+    top: 38%;
+    left: var(--left-x);
+}
+
+.intro-text-right {
+    top: 53%;
+    left: var(--right-x);
+}
+
+.intro-title {
+    font-size: clamp(30px, 6vw, 80px);
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.intro-description {
+    font-size: clamp(18px, 1.67vw, 24px);
+    line-height: 1.6;
+    opacity: var(--description-opacity);
+}
+
+.intro-text-left .intro-description {
+    margin-top: 24px;
+}
+
+.intro-text-right .intro-description {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 24px);
+    width: max-content;
+    text-align: right;
+}
+
+/* 노트북 */
+.intro-laptop {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    z-index: 2;
+    width: min(1000px, 65%);
+    pointer-events: none;
+    filter: brightness(1.5);
+
+    transform: translate(-50%, -50%) translateY(var(--laptop-offset));
+}
+
+#laptop-image {
+    width: 100%;
+    height: auto;
+    filter: brightness(1.1);
+}
+
+/* 스크롤 안내 */
+.intro-scroll {
+    position: absolute;
+    bottom: var(--pc-padding);
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transform: translateX(-50%);
+    opacity: var(--scroll-opacity);
+}
+
+.intro-scroll-arrow {
+    animation: scroll-arrow 1s ease-in-out infinite;
+}
+
+@keyframes scroll-arrow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(8px);
+    }
+}
+
+/* 모바일 */
+@media (max-width: 600px) {
+    .intro-stage {
+        --mobile-title-size: clamp(32px, 12.5vw, 50px);
+        --mobile-title-height: calc(var(--mobile-title-size) * 1.36);
+        --mobile-title-top: calc(clamp(260px, 70vw, 340px) + 40px);
+        --mobile-description-top: calc(
+            var(--mobile-title-top) + var(--mobile-title-height) * 2 + var(--m-gutter) * 2
+        );
+
+        /* JS가 갱신하는 모바일 제목 이동 값 */
+        --title-progress: 0;
+        --title-x: 0%;
+        --title-edge: calc(var(--m-padding) * (1 - var(--title-progress)) + var(--title-x));
+
+        padding: var(--m-padding);
+    }
+
+    /* 두 텍스트 그룹의 자식들을 stage에 직접 배치 */
+    .intro-text {
+        display: contents;
+    }
+
+    .intro-title {
+        position: absolute;
+        z-index: 1;
+        width: max-content;
+        font-size: var(--mobile-title-size);
+        line-height: 1.36;
+    }
+
+    .intro-text-left .intro-title {
+        top: var(--mobile-title-top);
+        left: var(--title-edge);
+        transform: translateX(calc(0% - var(--title-x)));
+    }
+
+    .intro-text-right .intro-title {
+        top: calc(var(--mobile-title-top) + var(--mobile-title-height) + var(--m-gutter));
+        right: var(--title-edge);
+        transform: translateX(var(--title-x));
+    }
+
+    .intro-text .intro-description {
+        position: absolute;
+        z-index: 1;
+        left: var(--m-padding);
+        right: var(--m-padding);
+        bottom: auto;
+        width: auto;
+        margin: 0;
+        font-size: var(--m-font-size);
+        line-height: 1.5;
+        text-align: center;
+        word-break: keep-all;
+    }
+
+    .intro-text-left .intro-description {
+        top: var(--mobile-description-top);
+    }
+
+    .intro-text-right .intro-description {
+        top: calc(var(--mobile-description-top) + var(--m-gutter) + var(--m-font-size) * 1.5);
+    }
+
+    /* 모바일 줄바꿈 조정 */
+    .intro-text-left .intro-description br,
+    .intro-text-right .intro-description br:first-of-type {
+        display: none;
+    }
+
+    .intro-laptop {
+        top: calc(var(--m-padding) + 20px);
+        width: clamp(380px, 110vw, 600px);
+        transform: translateX(-50%) translateY(var(--laptop-offset));
+    }
+
+    .intro-scroll {
+        bottom: var(--m-padding);
+        font-size: var(--m-font-size);
+    }
+}

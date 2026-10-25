@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최해주 | Portfolio</title>
+    <!-- FONT AWESOME -->
+    <script src="https://kit.fontawesome.com/96b5911d82.js" crossorigin="anonymous"></script>
+    <!-- SUIT -->
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/intro.css">
+    <link rel="stylesheet" href="./css/loading.css">
+</head>
+<body class="is-loading">
+    <!-- 로딩 화면 -->
+    <div
+        id="page-loader" class="page-loader"
+        role="status" aria-live="polite" aria-label="페이지를 불러오는 중입니다.">
+        <div class="loader-dots" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <p class="loader-message"></p>
+        <button class="loader-retry" type="button" hidden>다시 불러오기</button>
+    </div>
+    <!-- 헤더 -->
+    <header id="header">
+        <div class="container">
+            <div class="logo">
+                <h1 class="sr-only">최해주 포트폴리오</h1>
+                <a href="#intro">최해주</a>
+            </div>
+            <nav class="menu" aria-label="주 메뉴">
+                <ul>
+                    <li><a href="#intro">intro</a></li>
+                    <li><a href="#skill">skill</a></li>
+                    <li><a href="#project">project</a></li>
+                    <li><a href="#contact">contact</a></li>
+                </ul>
+            </nav>
+            <nav class="sns" aria-label="외부 링크">
+                <ul>
+                    <li>
+                        <a href="https://oojeah.tistory.com/" target="_blank">
+                        <i class="fa-solid fa-t"></i>
+                    </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/koinoniaHJ" target="_blank">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- 메인 -->
+    <main id="main">
+        <section id="intro">
+            <h2 class="sr-only">코드를 읽는 개발자 최해주</h2>
+            <div class="intro-sticky">
+                <div class="intro-stage container">
+                    <!-- 왼쪽 문구 -->
+                    <div class="intro-text intro-text-left">
+                        <p class="intro-title">코드를 읽는</p>
+                        <p class="intro-description">
+                            AI 시대에 필요한 건<br>
+                            코드를 읽는 힘
+                        </p>
+                    </div>
+                    <!-- 오른쪽 문구 -->
+                    <div class="intro-text intro-text-right">
+                        <p class="intro-description">
+                            AI가 작성한 코드를 <br>
+                            검증해야 하는 시대,<br>
+                            탄탄한 기본기가 기반입니다.
+                        </p>
+                        <p class="intro-title">개발자 최해주</p>
+                    </div>
+                    <!-- 스크롤 이미지 -->
+                    <div class="intro-laptop">
+                        <img
+                        id="laptop-image"
+                        src="./images/laptop/0001.png"
+                        alt="회전하는 노트북"
+                        width="1000"
+                        height="1000"
+                        >
+                    </div>
+                    <!-- 스크롤 안내 -->
+                    <div class="intro-scroll" aria-hidden="true">
+                        <span>SCROLL</span>
+                        <span class="intro-scroll-arrow">
+                            <i class="fa-solid fa-angle-down"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="skill" class="content-section">
+            <div class="container">
+                <h2>skill</h2>
+            </div>
+        </section>
+        <section id="project" class="content-section">
+            <div class="container">
+                <h2>project</h2>
+            </div>
+        </section>
+        <section id="contact" class="content-section">
+            <div class="container">
+                <h2>contact</h2>
+            </div>
+        </section>
+    </main>
+    <!-- JavaScript -->
+    <script src="./js/loading.js"></script>
+    <script src="./js/intro.js"></script>
+</body>
+</html>
