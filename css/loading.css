@@ -14,7 +14,7 @@ body.is-loading { overflow: hidden; }
     gap: 24px;
     padding: 20px;
     background-color: #fff;
-    color: var(--sage-gray);
+    color: var(--light-green);
     opacity: 1;
     transition: opacity 350ms ease;
 }
@@ -36,12 +36,12 @@ body.is-loading { overflow: hidden; }
 }
 
 /* 색상과 시작 시간을 왼쪽부터 순서대로 적용 */
-.loader-dots span:nth-child(1) { background-color: var(--warm-ivory); --delay: 0s; }
-.loader-dots span:nth-child(2) { background-color: var(--light-sage); --delay: 0.1s; }
-.loader-dots span:nth-child(3) { background-color: var(--sage-gray); --delay: 0.2s; }
-.loader-dots span:nth-child(4) { background-color: var(--forest-green); --delay: 0.3s; }
-.loader-dots span:nth-child(5) { background-color: var(--deep-green); --delay: 0.4s; }
-.loader-dots span:nth-child(6) { background-color: var(--text-color); --delay: 0.5s; }
+.loader-dots span:nth-child(1) { background-color: var(--off-white); --delay: 0s; }
+.loader-dots span:nth-child(2) { background-color: var(--tea-green); --delay: 0.1s; }
+.loader-dots span:nth-child(3) { background-color: var(--light-green); --delay: 0.2s; }
+.loader-dots span:nth-child(4) { background-color: var(--muted-green); --delay: 0.3s; }
+.loader-dots span:nth-child(5) { background-color: var(--sage-green); --delay: 0.4s; }
+.loader-dots span:nth-child(6) { background-color: var(--evergreen); --delay: 0.5s; }
 
 @keyframes loader-wave {
     0%, 100% { transform: translateY(6px) scale(0.65); }
@@ -78,14 +78,14 @@ body.is-loading { overflow: hidden; }
     padding: 10px 18px;
     border: 0;
     border-radius: 6px;
-    background-color: var(--forest-green);
+    background-color: var(--muted-green);
     color: #fff;
     font: inherit;
     cursor: pointer;
 }
-.loader-retry:hover { background-color: var(--deep-green); }
+.loader-retry:hover { background-color: var(--sage-green); }
 .loader-retry:focus-visible {
-    outline: 2px solid var(--deep-green);
+    outline: 2px solid var(--sage-green);
     outline-offset: 4px;
 }
 

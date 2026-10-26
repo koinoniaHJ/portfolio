@@ -5,7 +5,7 @@ window.addEventListener("load", async () => {
     const sticky = document.querySelector(".intro-sticky");
     const stage = document.querySelector(".intro-stage");
     const laptop = document.querySelector("#laptop-image");
-    const mobile = matchMedia("(max-width: 699px)");
+    const mobile = matchMedia("(max-width: 1023px)");
     const groups = [...stage.querySelectorAll(".intro-text")];
     const titles = groups.map(group => group.querySelector(".intro-title"));
     const frames = [];
@@ -27,7 +27,11 @@ window.addEventListener("load", async () => {
         const padding = parseFloat(getComputedStyle(stage).paddingLeft);
         const text = mobile.matches ? titles : groups;
         const widths = text.map(element => element.getBoundingClientRect().width);
-        const edges = [padding, width - padding - widths[1]];
+        const inset = mobile.matches
+            ? Math.max(padding, width * 0.2)
+            : padding;
+
+        const edges = [inset, width - inset - widths[1]];
 
         positions = widths.map((textWidth, index) => ({
             start: mobile.matches ? edges[index] :
@@ -40,7 +44,7 @@ window.addEventListener("load", async () => {
             const gapEnd = edges[1];
             const gap = Math.max(0, gapEnd - gapStart - padding);
             // 노트북이 차지하는 약 53%의 폭을 기준으로 투명 여백을 보정
-            set("--laptop-width", `${Math.min(1000, width * 0.65, gap / 0.53)}px`);
+            set("--laptop-width", `${Math.min(1200, width * 0.8)}px`);
             set("--laptop-x", `${(gapStart + gapEnd) / 2}px`);
         }
         requestRender();

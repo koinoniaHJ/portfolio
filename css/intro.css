@@ -1,4 +1,10 @@
+
 @charset "UTF-8";
+
+:root {
+    --header-height: 89px; /* JS에서 실제 헤더 높이로 갱신 */
+    --intro-scroll-distance: 200dvh; /* 인트로 스크롤 구간 길이 */
+}
 
 /* 스크롤 영역 */
 #intro {
@@ -12,14 +18,6 @@
 }
 
 .intro-stage {
-    --left-x: 27%;
-    --right-x: 43%;
-    --laptop-x: 50%;
-    --laptop-width: min(1000px, 65%);
-    --laptop-offset: 100dvh;
-    --description-opacity: 0;
-    --scroll-opacity: 1;
-
     position: relative;
     height: 100%;
     overflow: hidden;
@@ -29,36 +27,33 @@
 .intro-text {
     position: absolute;
     z-index: 1;
-    width: max-content;
     max-width: calc(50% - var(--page-padding) - var(--pc-gutter));
 }
 
 .intro-text-left {
     top: 35%;
-    left: var(--left-x);
+    left: var(--left-x, 27%); /* JS: 왼쪽 텍스트 가로 위치 */
 }
 
 .intro-text-right {
     top: 45%;
-    left: var(--right-x);
+    left: var(--right-x, 43%); /* JS: 오른쪽 텍스트 가로 위치 */
 }
 
 .intro-title {
-    font-size: clamp(40px, 6vw, 80px);
+    font-size: clamp(60px, 5vw, 80px);
     font-weight: 800;
-    line-height: 1.2;
     white-space: nowrap;
     color: black;
 }
 
 .intro-title span {
-    color: var(--sage-gray);
+    color: var(--deep-green);
 }
 
 .intro-description {
-    font-size: clamp(16px, 1.67vw, 18px);
-    /* line-height: 1.6; */
-    opacity: var(--description-opacity);
+    font-size: clamp(16px, 2vw, 18px);
+    opacity: var(--description-opacity, 0); /* JS: 설명문 투명도 */
 }
 
 .intro-text-left .intro-description {
@@ -78,21 +73,18 @@
 .intro-laptop {
     position: absolute;
     top: 45%;
-    left: var(--laptop-x);
+    left: var(--laptop-x, 50%); /* JS: 노트북 가로 위치 */
     z-index: 2;
-    width: var(--laptop-width);
+    width: var(--laptop-width, min(1000px, 65%)); /* JS: 노트북 너비 */
     pointer-events: none;
-    filter: brightness(2.3);
-    transform: translate(-50%, -50%) translateY(var(--laptop-offset));
+    filter: brightness(2);
+    transform: translate(-50%, -50%) translateY(var(--laptop-offset, 100dvh)); /* JS: 노트북 세로 이동 */
 }
 
 #laptop-image {
     width: 100%;
     height: auto;
     filter: brightness(1.1);
-
-    /* 원본 이미지에서 왼쪽으로 치우친 노트북을 중앙 보정 */
-    transform: translateX(4%);
 }
 
 /* 스크롤 안내 */
@@ -105,7 +97,7 @@
     align-items: center;
     gap: 8px;
     transform: translateX(-50%);
-    opacity: var(--scroll-opacity);
+    opacity: var(--scroll-opacity, 1); /* JS: 스크롤 안내 투명도 */
 }
 
 .intro-scroll-arrow {
@@ -113,9 +105,7 @@
 }
 
 @keyframes scroll-arrow {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: translateY(0);
     }
 
@@ -125,49 +115,42 @@
 }
 
 /* 모바일 */
-@media (max-width: 699px) {
+@media (max-width: 1023px) {
     .intro-stage {
-        --mobile-title-size: clamp(32px, 12.5vw, 50px);
-        --mobile-title-height: calc(var(--mobile-title-size) * 1.36);
-        --mobile-title-top: calc(clamp(260px, 70vw, 340px) + 40px);
-        --mobile-description-top: calc(var(--mobile-title-top) + var(--mobile-title-height) * 2 + var(--m-gutter) * 2);
+        --mobile-title-size: clamp(32px, 12.5vw, 60px); /* 제목 크기 */
+        --mobile-title-height: calc(var(--mobile-title-size) * 1.2); /* 제목 높이 */
+        --mobile-title-top: calc(clamp(260px, 70vw, 340px) + 40px); /* 제목 위치 */
+        --mobile-description-top: calc(var(--mobile-title-top) + var(--mobile-title-height) * 2 + 8px); /* 설명문 시작 위치 */
     }
 
-    /* 제목과 설명을 각각 stage 기준으로 배치 */
     .intro-text {
         display: contents;
-        max-width: none;
     }
 
     .intro-title {
         position: absolute;
         z-index: 1;
-        width: max-content;
         font-size: var(--mobile-title-size);
-        line-height: 1.36;
     }
 
     .intro-text-left .intro-title {
         top: var(--mobile-title-top);
-        left: var(--left-x);
+        left: var(--left-x, 27%);
     }
 
     .intro-text-right .intro-title {
-        top: calc(var(--mobile-title-top) + var(--mobile-title-height) + var(--m-gutter));
-        left: var(--right-x);
+        top: calc(var(--mobile-title-top) + var(--mobile-title-height));
+        left: var(--right-x, 43%);
     }
 
     .intro-text .intro-description {
         position: absolute;
         z-index: 1;
-        left: var(--m-padding);
-        right: var(--m-padding);
+        left: var(--page-padding);
+        right: var(--page-padding);
         bottom: auto;
         width: auto;
-        max-width: none;
         margin: 0;
-        font-size: var(--m-font-size);
-        line-height: 1.5;
         text-align: center;
         word-break: keep-all;
     }
@@ -177,7 +160,7 @@
     }
 
     .intro-text-right .intro-description {
-        top: calc(var(--mobile-description-top) + var(--m-gutter) + var(--m-font-size) * 1.5);
+        top: calc(var(--mobile-description-top) + 1.5rem);
     }
 
     .intro-text-left .intro-description br,
@@ -186,14 +169,14 @@
     }
 
     .intro-laptop {
-        top: calc(var(--m-padding) + 20px);
+        top: 40px;
         left: 50%;
         width: clamp(380px, 110vw, 600px);
-        transform: translateX(-50%) translateY(var(--laptop-offset));
+        transform: translateX(-50%) translateY(var(--laptop-offset, 100dvh));
     }
 
-    .intro-scroll {
-        bottom: var(--m-padding);
-        font-size: var(--m-font-size);
+    #laptop-image {
+        /* 원본 이미지의 왼쪽 투명 여백 보정 */
+        transform: translateX(4%);
     }
 }
