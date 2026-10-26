@@ -1,149 +1,111 @@
 window.addEventListener("load", async () => {
-    const SETTINGS = {
-        frameCount: 60,
-        imagePath: "./images/laptop/",
-        concurrentLoads: 6,
-        mobileBreakpoint: 600, // intro.css의 미디어 쿼리와 동일하게 유지
-        animationEnd: 0.9,
-        leftText: { start: 27, end: 5 },
-        rightText: { start: 43, end: 65 },
-    };
-
+    const FRAME_COUNT = 60;
     const header = document.querySelector("#header");
     const intro = document.querySelector("#intro");
     const sticky = document.querySelector(".intro-sticky");
     const stage = document.querySelector(".intro-stage");
-    const laptopImage = document.querySelector("#laptop-image");
-
-    if (!header || !intro || !sticky || !stage || !laptopImage) return;
-
-    const mobileQuery = window.matchMedia(`(max-width: ${SETTINGS.mobileBreakpoint}px)`);
-    const frames = new Array(SETTINGS.frameCount);
+    const laptop = document.querySelector("#laptop-image");
+    const mobile = matchMedia("(max-width: 699px)");
+    const groups = [...stage.querySelectorAll(".intro-text")];
+    const titles = groups.map(group => group.querySelector(".intro-title"));
+    const frames = [];
+    let positions = [];
     let headerHeight = 0;
     let currentFrame = -1;
-    let updateRequested = false;
+    let scheduled = false;
 
-    // 진행률은 항상 0~1 사이를 유지
-    function clamp(value) {
-        return Math.min(1, Math.max(0, value));
-    }
+    const range = (value, start = 0, end = 1) =>
+        Math.max(0, Math.min(1, (value - start) / (end - start)));
+    const mix = (start, end, progress) => start + (end - start) * progress;
+    const set = (name, value) => stage.style.setProperty(name, value);
 
-    function interpolate(start, end, progress) {
-        return start + (end - start) * progress;
-    }
+    function measure() {
+        headerHeight = header.getBoundingClientRect().height;
+        document.documentElement.style.setProperty("--header-height", `${headerHeight}px`);
 
-    function getRangeProgress(progress, start, end) {
-        return clamp((progress - start) / (end - start));
-    }
+        const width = stage.clientWidth;
+        const padding = parseFloat(getComputedStyle(stage).paddingLeft);
+        const text = mobile.matches ? titles : groups;
+        const widths = text.map(element => element.getBoundingClientRect().width);
+        const edges = [padding, width - padding - widths[1]];
 
-    function updateHeaderHeight() {
-        const height = header.getBoundingClientRect().height;
-        if (headerHeight !== height) {
-            headerHeight = height;
-            document.documentElement.style.setProperty("--header-height", `${height}px`);
+        positions = widths.map((textWidth, index) => ({
+            start: mobile.matches ? edges[index] :
+                Math.max(padding, Math.min(width * [0.27, 0.43][index], width - padding - textWidth)),
+            end: mobile.matches ? (width - textWidth) / 2 : edges[index],
+        }));
+
+        if (!mobile.matches) {
+            const gapStart = padding + widths[0];
+            const gapEnd = edges[1];
+            const gap = Math.max(0, gapEnd - gapStart - padding);
+            // 노트북이 차지하는 약 53%의 폭을 기준으로 투명 여백을 보정
+            set("--laptop-width", `${Math.min(1000, width * 0.65, gap / 0.53)}px`);
+            set("--laptop-x", `${(gapStart + gapEnd) / 2}px`);
         }
-        requestUpdate();
-    }
-
-    function getScrollProgress() {
-        const scrollDistance = intro.offsetHeight - sticky.offsetHeight;
-        const animationDistance = scrollDistance * SETTINGS.animationEnd;
-        if (animationDistance <= 0) return 0;
-
-        const scrolled = headerHeight - intro.getBoundingClientRect().top;
-        return clamp(scrolled / animationDistance);
-    }
-
-    function updateDesktop(progress) {
-        const left = interpolate(SETTINGS.leftText.start, SETTINGS.leftText.end, progress);
-        const right = interpolate(SETTINGS.rightText.start, SETTINGS.rightText.end, progress);
-        const laptopOffset = interpolate(100, 0, getRangeProgress(progress, 0, 0.5));
-
-        stage.style.setProperty("--left-x", `${left}%`);
-        stage.style.setProperty("--right-x", `${right}%`);
-        stage.style.setProperty("--laptop-offset", `${laptopOffset}dvh`);
-    }
-
-    function updateMobile(progress) {
-        // 30%부터 두 제목이 화면 가운데로 이동
-        const titleProgress = getRangeProgress(progress, 0.3, 1);
-        stage.style.setProperty("--title-progress", titleProgress);
-        stage.style.setProperty("--title-x", `${50 * titleProgress}%`);
-
-        // 노트북은 구간별로 다른 속도로 상승
-        let laptopOffset;
-        if (progress <= 0.3) {
-            laptopOffset = interpolate(100, 60, getRangeProgress(progress, 0, 0.3));
-        } else if (progress <= 0.5) {
-            laptopOffset = interpolate(60, 30, getRangeProgress(progress, 0.3, 0.5));
-        } else {
-            laptopOffset = interpolate(30, 0, getRangeProgress(progress, 0.5, 1));
-        }
-        stage.style.setProperty("--laptop-offset", `${laptopOffset}dvh`);
-    }
-
-    function updateLaptopFrame(progress) {
-        const rotation = getRangeProgress(progress, 0.3, 1);
-        const frameIndex = Math.round(rotation * (SETTINGS.frameCount - 1));
-        if (frameIndex === currentFrame || !frames[frameIndex]) return;
-
-        laptopImage.src = frames[frameIndex].src;
-        currentFrame = frameIndex;
+        requestRender();
     }
 
     function render() {
-        updateRequested = false;
-        const progress = getScrollProgress();
+        scheduled = false;
+        const distance = (intro.offsetHeight - sticky.offsetHeight) * 0.9;
+        const progress = distance > 0
+            ? range((headerHeight - intro.getBoundingClientRect().top) / distance)
+            : 0;
+        const movement = mobile.matches ? range(progress, 0.3, 1) : progress;
 
-        if (mobileQuery.matches) {
-            updateMobile(progress);
-        } else {
-            updateDesktop(progress);
+        positions.forEach(({ start, end }, index) => {
+            set(index ? "--right-x" : "--left-x", `${mix(start, end, movement)}px`);
+        });
+
+        let offset = 100 * (1 - range(progress, 0, 0.5));
+        if (mobile.matches) {
+            offset = progress <= 0.3
+                ? mix(100, 60, range(progress, 0, 0.3))
+                : progress <= 0.5
+                    ? mix(60, 30, range(progress, 0.3, 0.5))
+                    : mix(30, 0, range(progress, 0.5, 1));
         }
+        set("--laptop-offset", `${offset}dvh`);
+        set("--description-opacity", range(progress, 0.75, 1));
+        set("--scroll-opacity", 1 - range(progress, 0, 0.15));
 
-        stage.style.setProperty("--description-opacity", getRangeProgress(progress, 0.75, 1));
-        stage.style.setProperty("--scroll-opacity", 1 - getRangeProgress(progress, 0, 0.15));
-        updateLaptopFrame(progress);
+        const index = Math.round(range(progress, 0.3, 1) * (FRAME_COUNT - 1));
+        if (index !== currentFrame && frames[index]) {
+            laptop.src = frames[index].src;
+            currentFrame = index;
+        }
     }
 
-    function requestUpdate() {
-        if (updateRequested) return;
-        updateRequested = true;
-        window.requestAnimationFrame(render);
+    function requestRender() {
+        if (scheduled) return;
+        scheduled = true;
+        requestAnimationFrame(render);
     }
 
-    async function preloadFrames() {
-        let nextIndex = 0;
-
-        async function loadFrames() {
-            while (nextIndex < SETTINGS.frameCount) {
-                const index = nextIndex++;
-                const fileName = `${String(index + 1).padStart(4, "0")}.png`;
+    async function preload() {
+        let next = 0;
+        async function worker() {
+            while (next < FRAME_COUNT) {
+                const index = next++;
                 const image = new Image();
-                image.src = `${SETTINGS.imagePath}${fileName}`;
-
-                try {
-                    await image.decode();
-                    frames[index] = image;
-                } catch (error) {
-                    throw new Error(`이미지 로딩 실패: ${fileName}`, { cause: error });
-                }
+                image.src = `./images/laptop/${String(index + 1).padStart(4, "0")}.png`;
+                await image.decode();
+                frames[index] = image;
             }
         }
-
-        const count = Math.min(SETTINGS.concurrentLoads, SETTINGS.frameCount);
-        await Promise.all(Array.from({ length: count }, () => loadFrames()));
+        await Promise.all(Array.from({ length: 6 }, worker));
     }
 
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", updateHeaderHeight);
-    const headerObserver = new ResizeObserver(updateHeaderHeight);
-    headerObserver.observe(header);
-    updateHeaderHeight();
+    window.addEventListener("scroll", requestRender, { passive: true });
+    window.addEventListener("resize", measure);
+    new ResizeObserver(measure).observe(header);
+    measure();
 
     try {
-        await preloadFrames();
-        render(); // 로더가 사라지기 전에 현재 스크롤 위치 반영
+        await Promise.all([preload(), document.fonts.ready]);
+        measure();
+        render();
         window.dispatchEvent(new Event("intro:ready"));
     } catch (error) {
         window.dispatchEvent(new CustomEvent("intro:error", { detail: error }));

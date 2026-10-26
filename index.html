@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>최해주 | Portfolio</title>
+
     <!-- FONT AWESOME -->
     <script src="https://kit.fontawesome.com/96b5911d82.js" crossorigin="anonymous"></script>
+
     <!-- SUIT -->
     <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css" rel="stylesheet">
+
     <!-- CSS -->
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="./css/intro.css">
     <link rel="stylesheet" href="./css/loading.css">
+    <link rel="stylesheet" href="./css/skills.css">
 </head>
+
 <body class="is-loading">
     <!-- 로딩 화면 -->
-    <div
-        id="page-loader" class="page-loader"
-        role="status" aria-live="polite" aria-label="페이지를 불러오는 중입니다.">
+    <div id="page-loader" class="page-loader" role="status" aria-live="polite" aria-label="페이지를 불러오는 중입니다.">
         <div class="loader-dots" aria-hidden="true">
             <span></span>
             <span></span>
@@ -26,30 +30,33 @@
             <span></span>
             <span></span>
         </div>
-        <p class="loader-message"></p>
+        <p class="loader-message sr-only"></p>
         <button class="loader-retry" type="button" hidden>다시 불러오기</button>
     </div>
+
     <!-- 헤더 -->
     <header id="header">
         <div class="container">
             <div class="logo">
                 <h1 class="sr-only">최해주 포트폴리오</h1>
-                <a href="#intro">최해주</a>
+                <a href="#">최해주</a>
             </div>
+
             <nav class="menu" aria-label="주 메뉴">
                 <ul>
-                    <li><a href="#intro">intro</a></li>
-                    <li><a href="#skill">skill</a></li>
+                    <li><a href="#">intro</a></li>
+                    <li><a href="#skills">skills</a></li>
                     <li><a href="#project">project</a></li>
                     <li><a href="#contact">contact</a></li>
                 </ul>
             </nav>
+
             <nav class="sns" aria-label="외부 링크">
                 <ul>
                     <li>
                         <a href="https://oojeah.tistory.com/" target="_blank">
-                        <i class="fa-solid fa-t"></i>
-                    </a>
+                            <i class="fa-solid fa-t"></i>
+                        </a>
                     </li>
                     <li>
                         <a href="https://github.com/koinoniaHJ" target="_blank">
@@ -60,10 +67,12 @@
             </nav>
         </div>
     </header>
+
     <!-- 메인 -->
     <main id="main">
         <section id="intro">
             <h2 class="sr-only">코드를 읽는 개발자 최해주</h2>
+
             <div class="intro-sticky">
                 <div class="intro-stage container">
                     <!-- 왼쪽 문구 -->
@@ -74,6 +83,7 @@
                             코드를 읽는 힘
                         </p>
                     </div>
+
                     <!-- 오른쪽 문구 -->
                     <div class="intro-text intro-text-right">
                         <p class="intro-description">
@@ -83,16 +93,12 @@
                         </p>
                         <p class="intro-title">개발자 최해주</p>
                     </div>
+
                     <!-- 스크롤 이미지 -->
                     <div class="intro-laptop">
-                        <img
-                        id="laptop-image"
-                        src="./images/laptop/0001.png"
-                        alt="회전하는 노트북"
-                        width="1000"
-                        height="1000"
-                        >
+                        <img id="laptop-image" src="./images/laptop/0001.png" alt="회전하는 노트북" width="1920" height="1080">
                     </div>
+
                     <!-- 스크롤 안내 -->
                     <div class="intro-scroll" aria-hidden="true">
                         <span>SCROLL</span>
@@ -103,24 +109,123 @@
                 </div>
             </div>
         </section>
-        <section id="skill" class="content-section">
+        <!-- skills -->
+        <section id="skills">
             <div class="container">
-                <h2>skill</h2>
+                <h2 class="skills-title">SKILLS</h2>
+
+                <div class="skills-grid">
+                    <article class="skill-card">
+                        <h3>Frontend</h3>
+
+                        <ul class="skill-list">
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"
+                                    alt="HTML" title="HTML">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"
+                                    alt="CSS" title="CSS">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"
+                                    alt="JavaScript" title="JavaScript">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg"
+                                    alt="Vue" title="Vue">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg"
+                                    alt="Vite" title="Vite">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg"
+                                    alt="Bootstrap" title="Bootstrap">
+                            </li>
+                        </ul>
+                    </article>
+
+                    <article class="skill-card">
+                        <h3>Backend</h3>
+
+                        <ul class="skill-list">
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg"
+                                    alt="Java" title="Java">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/spring/spring-original.svg"
+                                    alt="Spring" title="Spring">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg"
+                                    alt="Python" title="Python">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg"
+                                    alt="FastAPI" title="FastAPI">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg"
+                                    alt="Node.js" title="Node.js">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"
+                                    alt="MySQL" title="MySQL">
+                            </li>
+                        </ul>
+                    </article>
+
+                    <article class="skill-card">
+                        <h3>Others</h3>
+
+                        <ul class="skill-list">
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg"
+                                    alt="Git" title="Git">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
+                                    alt="GitHub" title="GitHub">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg"
+                                    alt="VS Code" title="VS Code">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/notion/notion-original.svg"
+                                    alt="Notion" title="Notion">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/npm/npm-original-wordmark.svg"
+                                    alt="npm" title="npm">
+                            </li>
+                            <li>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg"
+                                    alt="Docker" title="Docker">
+                            </li>
+                        </ul>
+                    </article>
+                </div>
             </div>
         </section>
-        <section id="project" class="content-section">
+        <section id="project">
             <div class="container">
                 <h2>project</h2>
             </div>
         </section>
-        <section id="contact" class="content-section">
+
+        <section id="contact">
             <div class="container">
                 <h2>contact</h2>
             </div>
         </section>
     </main>
-    <!-- JavaScript -->
+
     <script src="./js/loading.js"></script>
     <script src="./js/intro.js"></script>
+    <script src="./js/skills.js"></script>
 </body>
+
 </html>
