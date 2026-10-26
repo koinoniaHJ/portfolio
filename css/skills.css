@@ -2,14 +2,14 @@
 
 #skills {
     min-height: 100dvh;
-    background-color: var(--light-sage);
+    background-color: var(--forest-green);
 }
 
 #skills .skills-title {
     padding: 120px var(--page-padding) 80px;
     text-transform: uppercase;
     text-align: center;
-    font-weight: 800;
+    font-weight: 300;
 }
 
 .skills-grid {
@@ -23,8 +23,8 @@
 .skill-card {
     padding: 16px;
     border-radius: 12px;
-    background-color: var(--sage-gray);
-    color: var(--warm-ivory);
+    /* background-color: var(--sage-gray); */
+    /* color: var(--warm-ivory); */
 
     opacity: 0;
     transform: translateY(48px);
@@ -40,9 +40,10 @@
 .skill-card h3 {
     padding-bottom: 16px;
     margin-bottom: 16px;
-    font-size: var(--pc-font-size);
-    font-weight: 500;
+    font-size: var(--m-font-size);
+    font-weight: 800;
     text-align: center;
+    text-transform: uppercase;
 }
 
 /* 기술 아이콘: 한 줄에 3개 */
@@ -58,7 +59,7 @@
     justify-content: center;
     aspect-ratio: 1;
     border-radius: 10px;
-    background-color: var(--light-sage);
+    background-color: var(--warm-ivory);
 }
 
 .skill-list img {
