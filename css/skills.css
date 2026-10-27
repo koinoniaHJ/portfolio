@@ -1,100 +1,103 @@
+
 @charset "UTF-8";
 
+/* 스킬 섹션 */
 #skills {
     min-height: 100dvh;
-    background-color: var(--muted-green);
+    display: flex;
+    align-items: center;
 }
 
-#skills .skills-title {
-    padding: 120px var(--page-padding) 80px;
-    text-transform: uppercase;
-    text-align: center;
-    font-weight: 300;
+#skills .container {
+    width: 100%;
 }
 
-.skills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.skills-title span {
+    color: var(--cerulean);
+}
+
+/* 스킬 목록 */
+.skills-list {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    max-width: 100%;
     gap: var(--pc-gutter);
-    align-items: start;
+    margin: 0 auto;
 }
 
-/* 카테고리 카드 */
+/* 카테고리 */
 .skill-card {
-    padding: 16px;
-    border-radius: 12px;
+    display: flex;
+    align-items: flex-start; /* 아이콘과 제목 상단 정렬 */
+    gap: var(--pc-gutter);
     opacity: 0;
     transform: translateY(48px);
     transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
-/* 화면에 들어오면 표시 */
+/* 스크롤 등장 애니메이션 */
 .skill-card.is-visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-.skill-card h3 {
-    padding-bottom: 16px;
-    margin-bottom: 16px;
-    font-weight: 800;
-    text-align: center;
-    text-transform: uppercase;
+/* FRONT → BACK → OTHERS 순차 등장 */
+.skill-card:nth-child(2).is-visible {
+    transition-delay: 0.12s;
 }
 
-/* 기술 아이콘: 한 줄에 3개 */
+.skill-card:nth-child(3).is-visible {
+    transition-delay: 0.24s;
+}
+
+.skill-category {
+    /* grow shrink basis */
+    flex: 0 0 100px;
+    font-size: 14px;
+}
+
+/* 기술 아이콘 */
 .skill-list {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+    gap: 16px;
 }
 
 .skill-list li {
+    flex: 0 0 120px;
+    aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    aspect-ratio: 1;
-    border-radius: 10px;
-    background-color: var(--off-white);
+    border: 1px solid var(--border-line);
+    filter: saturate(60%);
 }
 
 .skill-list img {
     width: 65%;
     height: 65%;
-    max-width: 64px;
-    max-height: 64px;
     object-fit: contain;
 }
 
-/* 모바일 */
-@media (max-width: 699px) {
-    .skills-grid {
-        grid-template-columns: 1fr;
-        max-width: 280px;
-        margin: 0 auto;
+/* 태블릿 및 모바일 */
+@media (max-width: 1023px) {
+    .skill-card {
         gap: var(--m-gutter);
     }
 
-    .skill-card {
-        padding: 12px;
+    .skill-category {
+        flex-basis: 80px;
     }
 
-    .skill-card h3 {
-        padding-bottom: 12px;
-        margin-bottom: 12px;
-    }
-
-    .skill-list {
-        gap: 8px;
-    }
-
-    .skill-list img {
-        max-width: 44px;
-        max-height: 44px;
+    .skill-list li {
+        flex-basis: clamp(80px, 12vw, 100px);
     }
 }
 
-/* 동작 줄이기 설정 */
+/* 애니메이션 최소화 */
 @media (prefers-reduced-motion: reduce) {
     .skill-card {
         opacity: 1;

@@ -14,12 +14,12 @@
     <link rel="stylesheet" href="./css/intro.css">
     <link rel="stylesheet" href="./css/loading.css">
     <link rel="stylesheet" href="./css/skills.css">
+    <link rel="stylesheet" href="./css/project.css">
 </head>
 
 <body class="is-loading">
     <!-- 로딩 화면 -->
-    <div id="page-loader" class="page-loader" 
-    role="status" aria-live="polite" aria-label="페이지를 불러오는 중입니다.">
+    <div id="page-loader" class="page-loader" role="status" aria-live="polite" aria-label="페이지를 불러오는 중입니다.">
         <div class="loader-dots" aria-hidden="true">
             <span></span>
             <span></span>
@@ -37,7 +37,7 @@
         <div class="container">
             <div class="logo">
                 <h1 class="sr-only">최해주 포트폴리오</h1>
-                <a href="#">최해주</a>
+                <a href="#">oojea_h</a>
             </div>
 
             <nav class="menu" aria-label="주 메뉴">
@@ -109,109 +109,62 @@
         <!-- skills -->
         <section id="skills">
             <div class="container">
-                <h2 class="skills-title">tech stack</h2>
-
-                <div class="skills-grid">
-                    <article class="skill-card">
-                        <h3>frontend</h3>
-
-                        <ul class="skill-list">
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"
-                                    alt="HTML" title="HTML">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"
-                                    alt="CSS" title="CSS">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"
-                                    alt="JavaScript" title="JavaScript">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg"
-                                    alt="Vue" title="Vue">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg"
-                                    alt="Vite" title="Vite">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg"
-                                    alt="Bootstrap" title="Bootstrap">
-                            </li>
-                        </ul>
-                    </article>
-
-                    <article class="skill-card">
-                        <h3>backend</h3>
-
-                        <ul class="skill-list">
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg"
-                                    alt="Java" title="Java">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/spring/spring-original.svg"
-                                    alt="Spring" title="Spring">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg"
-                                    alt="Python" title="Python">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg"
-                                    alt="FastAPI" title="FastAPI">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg"
-                                    alt="Node.js" title="Node.js">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"
-                                    alt="MySQL" title="MySQL">
-                            </li>
-                        </ul>
-                    </article>
-
-                    <article class="skill-card">
-                        <h3>others</h3>
-
-                        <ul class="skill-list">
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg"
-                                    alt="Git" title="Git">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
-                                    alt="GitHub" title="GitHub">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg"
-                                    alt="VS Code" title="VS Code">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/notion/notion-original.svg"
-                                    alt="Notion" title="Notion">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/npm/npm-original-wordmark.svg"
-                                    alt="npm" title="npm">
-                            </li>
-                            <li>
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg"
-                                    alt="Docker" title="Docker">
-                            </li>
-                        </ul>
-                    </article>
-                </div>
+                <h2 class="skills-title section-title">
+                    <span>tech</span> stack
+                </h2>
+                <div class="skills-list"></div>
             </div>
         </section>
+
+        <!-- 스킬 템플릿 -->
+        <template id="skill-template">
+            <article class="skill-card">
+                <h3 class="skill-category"></h3>
+                <ul class="skill-list"></ul>
+            </article>
+        </template>
+        <!-- project -->
         <section id="project">
             <div class="container">
-                <h2>project</h2>
+                <h2 class="project-title section-title">project</h2>
+                <div class="project-list"></div>
             </div>
         </section>
+
+        <!-- 프로젝트 카드 템플릿 -->
+        <template id="project-template">
+            <article class="project-card">
+                <div class="project-overview">
+                    <h3 class="project-name"></h3>
+                    <p class="project-type"></p>
+                    <div class="project-thumbnail"></div>
+                </div>
+
+                <div class="project-details">
+                    <dl class="project-specs">
+                        <div class="project-spec">
+                            <dt>Summary</dt>
+                            <dd class="project-summary"></dd>
+                        </div>
+                        <div class="project-spec">
+                            <dt>Language</dt>
+                            <dd class="project-language"></dd>
+                        </div>
+                    </dl>
+
+                    <div class="project-links">
+                        <a class="project-site" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-solid fa-link" aria-hidden="true"></i>
+                            <span></span>
+                        </a>
+                        <a class="project-github" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-brands fa-github" aria-hidden="true"></i>
+                            <span></span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </template>
 
         <section id="contact">
             <div class="container">
@@ -223,6 +176,7 @@
     <script src="./js/loading.js"></script>
     <script src="./js/intro.js"></script>
     <script src="./js/skills.js"></script>
+    <script src="./js/project.js"></script>
 </body>
 
 </html>

@@ -32,33 +32,28 @@
 
 .intro-text-left {
     top: 35%;
-    left: var(--left-x, 27%); /* JS: 왼쪽 텍스트 가로 위치 */
+    left: var(--left-x, 27%); /* JS: 왼쪽 텍스트 위치 */
 }
 
 .intro-text-right {
     top: 45%;
-    left: var(--right-x, 43%); /* JS: 오른쪽 텍스트 가로 위치 */
+    left: var(--right-x, 43%); /* JS: 오른쪽 텍스트 위치 */
 }
 
 .intro-title {
     font-size: clamp(60px, 5vw, 80px);
-    font-weight: 800;
+    font-weight: 600;
     white-space: nowrap;
-    color: black;
 }
 
-.intro-title span {
-    color: var(--deep-green);
-}
+.intro-title span { color: var(--cerulean); }
 
 .intro-description {
     font-size: clamp(16px, 2vw, 18px);
-    opacity: var(--description-opacity, 0); /* JS: 설명문 투명도 */
+    opacity: var(--description-opacity, 0); /* JS: 설명 투명도 */
 }
 
-.intro-text-left .intro-description {
-    margin-top: 1rem;
-}
+.intro-text-left .intro-description { margin-top: 1rem; }
 
 .intro-text-right .intro-description {
     position: absolute;
@@ -84,7 +79,6 @@
 #laptop-image {
     width: 100%;
     height: auto;
-    filter: brightness(1.1);
 }
 
 /* 스크롤 안내 */

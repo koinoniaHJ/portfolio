@@ -10,13 +10,14 @@
 
     --pc-max-width: 1440px;
 
-    --off-white: #F7F5F0;
-    --tea-green: #C9F2C7;
-    --light-green: #ACECA1;
-    --muted-green: #96BE8C;
-    --sage-green: #629460;
-    --deep-green: #0B3D2E;
-    --evergreen: #243119;
+    --off-white: #F7F7F7;
+    --jet-black: #1F363D;
+    --cerulean: #40798C;
+    --pacific-cyan: #048BA8;
+    --tropical-teal: #70A9A1;
+    --muted-teal: #9EC1A3;
+    --tea-green: #CFE0C3;
+    --border-line: #CCCBCB;
 }
 
 /* 초기화 */
@@ -26,7 +27,7 @@ a { color: inherit; text-decoration: none; }
 img { display: block; }
 
 /* 공통 */
-html { color: var(--evergreen); scroll-behavior: smooth; }
+html { color: var(--jet-black); scroll-behavior: smooth; }
 body { font-family: 'SUIT', sans-serif; font-size: 16px; background-color: var(--off-white); }
 .sr-only {
     position: absolute; width: 1px; height: 1px; margin: -1px;
@@ -38,7 +39,13 @@ body { font-family: 'SUIT', sans-serif; font-size: 16px; background-color: var(-
 }
 
 /* 헤더 */
-#header { position: sticky; top: 0; z-index: 999; }
+#header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background-color: #F7F7F7dd;
+    border-bottom: 1px solid #FFF;
+}
 
 #header .container {
     display: grid; grid-template-columns: 1fr auto 1fr;
@@ -53,6 +60,12 @@ body { font-family: 'SUIT', sans-serif; font-size: 16px; background-color: var(-
 #header .logo a, #header .sns i { font-size: clamp(20px, 4vw, 28px); }
 
 #header .menu a { font-weight: bold; }
+
+/* 섹션 */
+.section-title { 
+    font-weight: 100;  font-size: clamp(80px, 10vw, 100px); 
+    text-align: center; text-transform: uppercase;
+    padding: 120px 0 80px; }
 
 @media (max-width: 767px) {
     :root { --page-padding: var(--m-padding); }
