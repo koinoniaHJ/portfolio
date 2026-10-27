@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="./css/loading.css">
     <link rel="stylesheet" href="./css/skills.css">
     <link rel="stylesheet" href="./css/project.css">
+    <link rel="stylesheet" href="./css/contact.css">
 </head>
 
 <body class="is-loading">
@@ -165,18 +166,46 @@
                 </div>
             </article>
         </template>
-
+        <!-- contact -->
         <section id="contact">
             <div class="container">
-                <h2>contact</h2>
+                <h2 class="contact-title section-title">contact</h2>
+
+                <form id="contact-form"
+                    action="https://script.google.com/macros/s/AKfycbxNzxd0VGZy9ptDiDGrwN0cred3g15cI5SC_49UpJCf548Cy-79ewJlkMxk5Oy7P_5GwA/exec"
+                    method="POST">
+
+                    <div>
+                        <label for="name" class="sr-only">이름</label>
+                        <input type="text" id="name" name="name" placeholder="이름" required>
+                    </div>
+
+                    <div>
+                        <label for="email" class="sr-only">이메일</label>
+                        <input type="email" id="email" name="email" placeholder="이메일" required>
+                    </div>
+
+                    <div>
+                        <label for="message" class="sr-only">문의 내용</label>
+                        <textarea id="message" name="message" placeholder="메시지를 입력해주세요." required></textarea>
+                    </div>
+
+                    <button type="submit">메시지 보내기</button>
+                    <p class="contact-status" role="status" aria-live="polite" hidden></p>
+                </form>
             </div>
         </section>
     </main>
+
+    <footer id="footer">
+        <small>&copy; 2026. CHJ All Rights Reserved. </small>
+    </footer>
 
     <script src="./js/loading.js"></script>
     <script src="./js/intro.js"></script>
     <script src="./js/skills.js"></script>
     <script src="./js/project.js"></script>
+    <script src="./js/contact.js"></script>
 </body>
 
 </html>

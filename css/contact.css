@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+#contact {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+}
+
+#contact .container {
+    width: 100%;
+}
+
+/* 폼 */
+#contact form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+/* 입력창 */
+#contact input,
+#contact textarea {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--border-line);
+    background-color: transparent;
+}
+
+#contact textarea {
+    height: 150px;
+}
+
+#contact input::placeholder,
+#contact textarea::placeholder {
+    color: var(--border-line);
+}
+
+/* 입력창 포커스 */
+#contact input:focus-visible,
+#contact textarea:focus-visible {
+    outline: 1px solid var(--cerulean);
+    /* outline-offset: 2px; */
+}
+
+/* 전송 버튼 */
+#contact button {
+    width: 100%;
+    padding: 14px;
+    background: var(--cerulean);
+    color: var(--off-white);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+#contact button:hover {
+    opacity: 0.90;
+}
+.contact-status {
+    color: var(--pacific-cyan);
+    text-align: center;
+}
