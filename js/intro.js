@@ -52,7 +52,7 @@ window.addEventListener("load", async () => {
                 const index = next++;
                 const image = new Image();
 
-                image.src = `./images/laptop/${String(index + 1).padStart(4, "0")}.png`;
+                image.src = `./images/laptop/${String(index + 1).padStart(4, "0")}.webp`;
 
                 await image.decode();
                 frames[index] = image;
