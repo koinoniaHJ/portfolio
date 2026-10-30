@@ -101,7 +101,13 @@
 
                     <!-- 스크롤 이미지 -->
                     <div class="intro-laptop">
-                        <img id="laptop-image" src="./images/laptop/0001.webp" alt="회전하는 노트북" width="1920" height="1080">
+                        <picture>
+                            <source id="laptop-mobile-source" media="(max-width: 1023px)"
+                                srcset="./images/laptop/mobile/0001.webp">
+
+                            <img id="laptop-image" src="./images/laptop/0001.webp" alt="회전하는 노트북" width="1280"
+                                height="760">
+                        </picture>
                     </div>
 
                     <!-- 스크롤 안내 -->

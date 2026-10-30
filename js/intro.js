@@ -1,6 +1,10 @@
 
 window.addEventListener("load", async () => {
     const FRAME_COUNT = 60;
+    const useMobileImages = matchMedia("(max-width: 1023px)").matches;
+    const imagePath = useMobileImages
+        ? "./images/laptop/mobile/"
+        : "./images/laptop/";
 
     const header = document.querySelector("#header");
     const intro = document.querySelector("#intro");
@@ -16,6 +20,7 @@ window.addEventListener("load", async () => {
 
     const laptop = document.querySelector(".intro-laptop");
     const laptopImage = document.querySelector("#laptop-image");
+    const mobileSource = document.querySelector("#laptop-mobile-source");
     const scrollGuide = document.querySelector(".intro-scroll");
     const loader = document.querySelector("#page-loader");
 
@@ -52,7 +57,7 @@ window.addEventListener("load", async () => {
                 const index = next++;
                 const image = new Image();
 
-                image.src = `./images/laptop/${String(index + 1).padStart(4, "0")}.webp`;
+                image.src = `${imagePath}${String(index + 1).padStart(4, "0")}.webp`;
 
                 await image.decode();
                 frames[index] = image;
@@ -64,10 +69,15 @@ window.addEventListener("load", async () => {
 
     // 노트북 이미지 프레임 변경
     function showFrame(index) {
-        if (index !== currentFrame) {
+        if (index === currentFrame || !frames[index]) return;
+
+        if (useMobileImages && mobileSource) {
+            mobileSource.srcset = frames[index].src;
+        } else {
             laptopImage.src = frames[index].src;
-            currentFrame = index;
         }
+
+        currentFrame = index;
     }
 
     // 로딩 화면 제거
