@@ -1,6 +1,7 @@
 
 window.addEventListener("load", async () => {
     const FRAME_COUNT = 60;
+    const FRAME_STEP = matchMedia("(max-width: 1023px)").matches ? 2 : 1;
 
     const header = document.querySelector("#header");
     const intro = document.querySelector("#intro");
@@ -19,8 +20,11 @@ window.addEventListener("load", async () => {
     const scrollGuide = document.querySelector(".intro-scroll");
     const loader = document.querySelector("#page-loader");
 
-    const frames = [];
+    const frames = new Array(FRAME_COUNT);
+    const pending = new Map();
+
     let currentFrame = -1;
+    let requestedFrame = 0;
 
     // 헤더 높이 계산
     function measureHeader() {
@@ -43,30 +47,94 @@ window.addEventListener("load", async () => {
         text.style.setProperty("--intro-indent", `${indent}px`);
     }
 
-    // 노트북 이미지 60장 미리 로딩
-    async function preload() {
-        let next = 0;
+    // PC 및 모바일 프레임 번호 계산
+    function frameNumber(index) {
+        const frame = Math.max(
+            0,
+            Math.min(FRAME_COUNT - 1, Math.round(index))
+        );
 
-        async function worker() {
-            while (next < FRAME_COUNT) {
-                const index = next++;
-                const image = new Image();
+        if (frame === FRAME_COUNT - 1) return frame;
 
-                image.src = `./images/laptop/${String(index + 1).padStart(4, "0")}.png`;
+        return Math.round(frame / FRAME_STEP) * FRAME_STEP;
+    }
 
-                await image.decode();
-                frames[index] = image;
+    // 노트북 이미지 개별 로딩
+    function loadFrame(index) {
+        if (frames[index]) {
+            return Promise.resolve(frames[index]);
+        }
+
+        if (pending.has(index)) {
+            return pending.get(index);
+        }
+
+        const image = new Image();
+        image.decoding = "async";
+        image.src = `./images/laptop/${String(index + 1).padStart(4, "0")}.png`;
+
+        const promise = image.decode().then(() => {
+            frames[index] = image;
+
+            if (requestedFrame === index && currentFrame !== index) {
+                laptopImage.src = image.src;
+                currentFrame = index;
+            }
+
+            return image;
+        }).finally(() => {
+            pending.delete(index);
+        });
+
+        pending.set(index, promise);
+
+        return promise;
+    }
+
+    // 나머지 이미지 점진적 로딩
+    async function preloadRemaining() {
+        const indices = [];
+
+        for (let i = 1; i < FRAME_COUNT; i++) {
+            if (frameNumber(i) === i) {
+                indices.push(i);
             }
         }
 
-        await Promise.all(Array.from({ length: 6 }, worker));
+        let next = 0;
+        const concurrency = FRAME_STEP === 1 ? 4 : 2;
+
+        async function worker() {
+            while (next < indices.length) {
+                const index = indices[next++];
+
+                try {
+                    await loadFrame(index);
+                } catch (error) {
+                    console.warn(`프레임 ${index + 1} 로딩 실패`, error);
+                }
+            }
+        }
+
+        await Promise.all(
+            Array.from({ length: concurrency }, worker)
+        );
     }
 
     // 노트북 이미지 프레임 변경
     function showFrame(index) {
-        if (index !== currentFrame) {
-            laptopImage.src = frames[index].src;
-            currentFrame = index;
+        const target = frameNumber(index);
+        requestedFrame = target;
+
+        if (frames[target]) {
+            if (currentFrame !== target) {
+                laptopImage.src = frames[target].src;
+                currentFrame = target;
+            }
+        } else if (!pending.has(target)) {
+            loadFrame(target).catch(error => {
+                console.warn(`프레임 ${target + 1} 로딩 실패`, error);
+            });
         }
     }
 
@@ -114,8 +182,16 @@ window.addEventListener("load", async () => {
         measureHeader();
         window.addEventListener("resize", measureHeader);
 
-        // 이미지와 폰트 준비
-        await Promise.all([preload(), document.fonts.ready]);
+        // 첫 번째 이미지와 폰트만 준비
+        await Promise.all([
+            laptopImage.decode(),
+            document.fonts.ready
+        ]);
+
+        // HTML에 표시된 첫 이미지를 재사용
+        frames[0] = {
+            src: laptopImage.currentSrc || laptopImage.src
+        };
 
         measureTitle();
         showFrame(0);
@@ -165,7 +241,10 @@ window.addEventListener("load", async () => {
                     descriptions.offsetHeight +
                     gap * 2;
 
-                const top = Math.max(16, (stage.clientHeight - totalHeight) / 2);
+                const top = Math.max(
+                    16,
+                    (stage.clientHeight - totalHeight) / 2
+                );
 
                 return {
                     laptopY: top - laptop.offsetTop,
@@ -252,7 +331,7 @@ window.addEventListener("load", async () => {
                 duration: 0.15
             }, 0);
 
-            // 노트북 이미지 60장 전환
+            // 노트북 이미지 프레임 전환
             timeline.to(playhead, {
                 frame: FRAME_COUNT - 1,
                 duration: 0.7,
@@ -268,7 +347,13 @@ window.addEventListener("load", async () => {
             }, 0.85);
         });
 
+        // 첫 화면 준비 완료 후 로딩 화면 종료
         hideLoader();
+
+        // 나머지 이미지는 페이지 표시 후 로딩
+        setTimeout(() => {
+            preloadRemaining().catch(console.error);
+        }, 400);
 
     } catch (error) {
         showError(error);
