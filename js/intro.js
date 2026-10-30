@@ -1,5 +1,4 @@
-
-window.addEventListener("load", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const FRAME_COUNT = 60;
     const useMobileImages = matchMedia("(max-width: 1023px)").matches;
     const imagePath = useMobileImages
