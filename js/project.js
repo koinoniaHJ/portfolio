@@ -1,4 +1,3 @@
-
 /* 프로젝트 데이터 */
 const projects = [
     {
@@ -6,7 +5,11 @@ const projects = [
         type: "개인 프로젝트",
         summary: "프로젝트 요약 설명",
         language: "HTML, CSS, JavaScript",
-        image: "",
+        images: [
+            "./images/project1/01.webp",
+            "./images/project1/02.webp",
+            "./images/project1/03.webp"
+        ],
         site: "https://www.example.com",
         github: "https://www.example.com"
     },
@@ -15,7 +18,7 @@ const projects = [
         type: "팀 프로젝트",
         summary: "프로젝트 요약 설명",
         language: "Vue, Node.js, MySQL",
-        image: "",
+        images: [],
         site: "",
         github: ""
     }
@@ -33,19 +36,76 @@ projects.forEach(project => {
     card.querySelector(".project-summary").textContent = project.summary;
     card.querySelector(".project-language").textContent = project.language;
 
-    // 대표 이미지
-    const thumbnail = card.querySelector(".project-thumbnail");
+    /* 이미지 캐러셀 */
+    const carousel = card.querySelector(".project-carousel");
+    const track = card.querySelector(".project-carousel-track");
+    const prevButton = card.querySelector(".project-carousel-prev");
+    const nextButton = card.querySelector(".project-carousel-next");
+    const dots = card.querySelector(".project-carousel-dots");
+    const images = project.images || [];
 
-    if (project.image) {
-        const img = document.createElement("img");
-        img.src = project.image;
-        img.alt = `${project.name} 대표 이미지`;
-        thumbnail.append(img);
+    carousel.setAttribute("aria-label", `${project.name} 미리보기`);
+
+    const slides = images.length ? images : [null];
+
+    slides.forEach((src, index) => {
+        const slide = document.createElement("div");
+        slide.className = "project-slide";
+        slide.setAttribute("role", "group");
+        slide.setAttribute("aria-label", `${index + 1} / ${slides.length}`);
+
+        if (src) {
+            const img = document.createElement("img");
+            img.src = src;
+            img.alt = `${project.name} 미리보기 ${index + 1}`;
+            img.loading = "lazy";
+            img.decoding = "async";
+            slide.append(img);
+        } else {
+            slide.textContent = "대표이미지";
+        }
+
+        track.append(slide);
+    });
+
+    if (images.length > 1) {
+        let currentIndex = 0;
+
+        const dotButtons = images.map((_, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.setAttribute("aria-label", `${index + 1}번 이미지 보기`);
+            button.addEventListener("click", () => moveTo(index));
+            dots.append(button);
+            return button;
+        });
+
+        function moveTo(index) {
+            currentIndex = (index + images.length) % images.length;
+
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            dotButtons.forEach((button, i) => {
+                button.classList.toggle("is-active", i === currentIndex);
+                button.setAttribute("aria-current", String(i === currentIndex));
+            });
+
+            [...track.children].forEach((slide, i) => {
+                slide.setAttribute("aria-hidden", String(i !== currentIndex));
+            });
+        }
+
+        prevButton.addEventListener("click", () => moveTo(currentIndex - 1));
+        nextButton.addEventListener("click", () => moveTo(currentIndex + 1));
+
+        moveTo(0);
     } else {
-        thumbnail.textContent = "대표이미지";
+        prevButton.hidden = true;
+        nextButton.hidden = true;
+        dots.hidden = true;
     }
 
-    // 프로젝트 링크
+    /* 프로젝트 링크 */
     const site = card.querySelector(".project-site");
     const github = card.querySelector(".project-github");
 
@@ -61,6 +121,10 @@ projects.forEach(project => {
         github.querySelector("span").textContent = project.github;
     } else {
         github.remove();
+    }
+
+    if (!project.site && !project.github) {
+        card.querySelector(".project-links").remove();
     }
 
     projectList.append(card);

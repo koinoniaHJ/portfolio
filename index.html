@@ -144,34 +144,51 @@
         <!-- 프로젝트 카드 템플릿 -->
         <template id="project-template">
             <article class="project-card">
-                <div class="project-overview">
-                    <h3 class="project-name"></h3>
-                    <p class="project-type"></p>
-                    <div class="project-thumbnail"></div>
+                <div class="project-info">
+                    <div class="project-overview">
+                        <h3 class="project-name"></h3>
+                        <p class="project-type"></p>
+                    </div>
+
+                    <div class="project-details">
+                        <dl class="project-specs">
+                            <div class="project-spec">
+                                <dt>Summary</dt>
+                                <dd class="project-summary"></dd>
+                            </div>
+                            <div class="project-spec">
+                                <dt>Language</dt>
+                                <dd class="project-language"></dd>
+                            </div>
+                        </dl>
+
+                        <div class="project-links">
+                            <a class="project-site" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-solid fa-link" aria-hidden="true"></i>
+                                <span></span>
+                            </a>
+                            <a class="project-github" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-brands fa-github" aria-hidden="true"></i>
+                                <span></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="project-details">
-                    <dl class="project-specs">
-                        <div class="project-spec">
-                            <dt>Summary</dt>
-                            <dd class="project-summary"></dd>
-                        </div>
-                        <div class="project-spec">
-                            <dt>Language</dt>
-                            <dd class="project-language"></dd>
-                        </div>
-                    </dl>
-
-                    <div class="project-links">
-                        <a class="project-site" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-solid fa-link" aria-hidden="true"></i>
-                            <span></span>
-                        </a>
-                        <a class="project-github" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-brands fa-github" aria-hidden="true"></i>
-                            <span></span>
-                        </a>
+                <div class="project-carousel" role="region" aria-roledescription="캐러셀">
+                    <div class="project-carousel-viewport">
+                        <div class="project-carousel-track"></div>
                     </div>
+
+                    <button class="project-carousel-prev" type="button" aria-label="이전 이미지">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+
+                    <button class="project-carousel-next" type="button" aria-label="다음 이미지">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+
+                    <div class="project-carousel-dots" aria-label="미리보기 이미지 선택"></div>
                 </div>
             </article>
         </template>
