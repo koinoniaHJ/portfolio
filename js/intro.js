@@ -1,8 +1,6 @@
 
 window.addEventListener("load", async () => {
     const FRAME_COUNT = 60;
-    const MOBILE_FRAME_STEP = 2;
-    const KEY_FRAMES = [0, 10, 20, 30, 40, 50, 59];
 
     const header = document.querySelector("#header");
     const intro = document.querySelector("#intro");
@@ -21,13 +19,8 @@ window.addEventListener("load", async () => {
     const scrollGuide = document.querySelector(".intro-scroll");
     const loader = document.querySelector("#page-loader");
 
-    const mobileQuery = matchMedia("(max-width: 1023px)");
-
-    const frames = new Array(FRAME_COUNT);
-    const pending = new Map();
-
+    const frames = [];
     let currentFrame = -1;
-    let requestedFrame = 0;
 
     // 헤더 높이 계산
     function measureHeader() {
@@ -50,154 +43,30 @@ window.addEventListener("load", async () => {
         text.style.setProperty("--intro-indent", `${indent}px`);
     }
 
-    // PC 및 모바일 프레임 번호 계산
-    function frameNumber(index) {
-        const frame = Math.max(
-            0,
-            Math.min(FRAME_COUNT - 1, Math.round(index))
-        );
-
-        if (!mobileQuery.matches) return frame;
-        if (frame === FRAME_COUNT - 1) return frame;
-
-        return Math.min(
-            FRAME_COUNT - 1,
-            Math.round(frame / MOBILE_FRAME_STEP) * MOBILE_FRAME_STEP
-        );
-    }
-
-    // 노트북 이미지 표시
-    function renderFrame(index) {
-        if (!frames[index] || currentFrame === index) return;
-
-        laptopImage.src = frames[index].src;
-        currentFrame = index;
-    }
-
-    // 노트북 이미지 개별 로딩
-    function loadFrame(index) {
-        if (frames[index]) {
-            return Promise.resolve(frames[index]);
-        }
-
-        if (pending.has(index)) {
-            return pending.get(index);
-        }
-
-        const image = new Image();
-        image.decoding = "async";
-        image.src = `./images/laptop/${String(index + 1).padStart(4, "0")}.png`;
-
-        const promise = image.decode().then(() => {
-            frames[index] = image;
-
-            // 현재 스크롤 위치에 필요한 프레임이면 바로 표시
-            if (requestedFrame === index) {
-                renderFrame(index);
-            }
-
-            return image;
-        }).finally(() => {
-            pending.delete(index);
-        });
-
-        pending.set(index, promise);
-
-        return promise;
-    }
-
-    // 주요 프레임 먼저 로딩
-    async function preloadKeyFrames() {
-        const indices = KEY_FRAMES.filter(index => !frames[index]);
+    // 노트북 이미지 60장 미리 로딩
+    async function preload() {
         let next = 0;
 
         async function worker() {
-            while (next < indices.length) {
-                const index = indices[next++];
+            while (next < FRAME_COUNT) {
+                const index = next++;
+                const image = new Image();
 
-                try {
-                    await loadFrame(index);
-                } catch (error) {
-                    console.warn(`주요 프레임 ${index + 1} 로딩 실패`, error);
-                }
+                image.src = `./images/laptop/${String(index + 1).padStart(4, "0")}.png`;
+
+                await image.decode();
+                frames[index] = image;
             }
         }
 
-        await Promise.all(
-            Array.from({ length: 3 }, worker)
-        );
-    }
-
-    // 나머지 이미지 점진적 로딩
-    async function preloadRemaining() {
-        const indices = [];
-
-        for (let i = 1; i < FRAME_COUNT; i++) {
-            if (frameNumber(i) === i && !frames[i]) {
-                indices.push(i);
-            }
-        }
-
-        let next = 0;
-        const concurrency = mobileQuery.matches ? 2 : 4;
-
-        async function worker() {
-            while (next < indices.length) {
-                const index = indices[next++];
-
-                try {
-                    await loadFrame(index);
-                } catch (error) {
-                    console.warn(`프레임 ${index + 1} 로딩 실패`, error);
-                }
-            }
-        }
-
-        await Promise.all(
-            Array.from({ length: concurrency }, worker)
-        );
-    }
-
-    // 현재 위치에서 가장 가까운 준비된 프레임 찾기
-    function nearestFrame(index) {
-        let nearest = -1;
-
-        for (let i = 0; i < FRAME_COUNT; i++) {
-            if (!frames[i]) continue;
-
-            if (
-                nearest === -1 ||
-                Math.abs(i - index) < Math.abs(nearest - index)
-            ) {
-                nearest = i;
-            }
-        }
-
-        return nearest;
+        await Promise.all(Array.from({ length: 6 }, worker));
     }
 
     // 노트북 이미지 프레임 변경
     function showFrame(index) {
-        const target = frameNumber(index);
-        requestedFrame = target;
-
-        if (frames[target]) {
-            renderFrame(target);
-            return;
-        }
-
-        // 아직 로딩되지 않았다면 가까운 프레임 표시
-        const nearest = nearestFrame(target);
-
-        if (nearest !== -1) {
-            renderFrame(nearest);
-        }
-
-        // 필요한 프레임을 우선 요청
-        if (!pending.has(target)) {
-            loadFrame(target).catch(error => {
-                console.warn(`프레임 ${target + 1} 로딩 실패`, error);
-            });
+        if (index !== currentFrame) {
+            laptopImage.src = frames[index].src;
+            currentFrame = index;
         }
     }
 
@@ -245,21 +114,8 @@ window.addEventListener("load", async () => {
         measureHeader();
         window.addEventListener("resize", measureHeader);
 
-        // 첫 번째 이미지와 폰트 준비
-        await Promise.all([
-            laptopImage.decode(),
-            document.fonts.ready
-        ]);
-
-        // HTML의 첫 번째 이미지를 재사용
-        frames[0] = {
-            src: laptopImage.currentSrc || laptopImage.src
-        };
-
-        currentFrame = 0;
-
-        // 회전 애니메이션의 주요 프레임 준비
-        await preloadKeyFrames();
+        // 이미지와 폰트 준비
+        await Promise.all([preload(), document.fonts.ready]);
 
         measureTitle();
         showFrame(0);
@@ -309,10 +165,7 @@ window.addEventListener("load", async () => {
                     descriptions.offsetHeight +
                     gap * 2;
 
-                const top = Math.max(
-                    16,
-                    (stage.clientHeight - totalHeight) / 2
-                );
+                const top = Math.max(16, (stage.clientHeight - totalHeight) / 2);
 
                 return {
                     laptopY: top - laptop.offsetTop,
@@ -399,7 +252,7 @@ window.addEventListener("load", async () => {
                 duration: 0.15
             }, 0);
 
-            // 노트북 이미지 프레임 전환
+            // 노트북 이미지 60장 전환
             timeline.to(playhead, {
                 frame: FRAME_COUNT - 1,
                 duration: 0.7,
@@ -415,13 +268,7 @@ window.addEventListener("load", async () => {
             }, 0.85);
         });
 
-        // 주요 프레임 준비 후 로딩 화면 종료
         hideLoader();
-
-        // 나머지 이미지는 백그라운드에서 로딩
-        setTimeout(() => {
-            preloadRemaining().catch(console.error);
-        }, 100);
 
     } catch (error) {
         showError(error);
