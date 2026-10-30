@@ -1,7 +1,8 @@
 
 window.addEventListener("load", async () => {
     const FRAME_COUNT = 60;
-    const FRAME_STEP = matchMedia("(max-width: 1023px)").matches ? 2 : 1;
+    const MOBILE_FRAME_STEP = 2;
+    const KEY_FRAMES = [0, 10, 20, 30, 40, 50, 59];
 
     const header = document.querySelector("#header");
     const intro = document.querySelector("#intro");
@@ -19,6 +20,8 @@ window.addEventListener("load", async () => {
     const laptopImage = document.querySelector("#laptop-image");
     const scrollGuide = document.querySelector(".intro-scroll");
     const loader = document.querySelector("#page-loader");
+
+    const mobileQuery = matchMedia("(max-width: 1023px)");
 
     const frames = new Array(FRAME_COUNT);
     const pending = new Map();
@@ -54,9 +57,21 @@ window.addEventListener("load", async () => {
             Math.min(FRAME_COUNT - 1, Math.round(index))
         );
 
+        if (!mobileQuery.matches) return frame;
         if (frame === FRAME_COUNT - 1) return frame;
 
-        return Math.round(frame / FRAME_STEP) * FRAME_STEP;
+        return Math.min(
+            FRAME_COUNT - 1,
+            Math.round(frame / MOBILE_FRAME_STEP) * MOBILE_FRAME_STEP
+        );
+    }
+
+    // 노트북 이미지 표시
+    function renderFrame(index) {
+        if (!frames[index] || currentFrame === index) return;
+
+        laptopImage.src = frames[index].src;
+        currentFrame = index;
     }
 
     // 노트북 이미지 개별 로딩
@@ -76,9 +91,9 @@ window.addEventListener("load", async () => {
         const promise = image.decode().then(() => {
             frames[index] = image;
 
-            if (requestedFrame === index && currentFrame !== index) {
-                laptopImage.src = image.src;
-                currentFrame = index;
+            // 현재 스크롤 위치에 필요한 프레임이면 바로 표시
+            if (requestedFrame === index) {
+                renderFrame(index);
             }
 
             return image;
@@ -91,18 +106,40 @@ window.addEventListener("load", async () => {
         return promise;
     }
 
+    // 주요 프레임 먼저 로딩
+    async function preloadKeyFrames() {
+        const indices = KEY_FRAMES.filter(index => !frames[index]);
+        let next = 0;
+
+        async function worker() {
+            while (next < indices.length) {
+                const index = indices[next++];
+
+                try {
+                    await loadFrame(index);
+                } catch (error) {
+                    console.warn(`주요 프레임 ${index + 1} 로딩 실패`, error);
+                }
+            }
+        }
+
+        await Promise.all(
+            Array.from({ length: 3 }, worker)
+        );
+    }
+
     // 나머지 이미지 점진적 로딩
     async function preloadRemaining() {
         const indices = [];
 
         for (let i = 1; i < FRAME_COUNT; i++) {
-            if (frameNumber(i) === i) {
+            if (frameNumber(i) === i && !frames[i]) {
                 indices.push(i);
             }
         }
 
         let next = 0;
-        const concurrency = FRAME_STEP === 1 ? 4 : 2;
+        const concurrency = mobileQuery.matches ? 2 : 4;
 
         async function worker() {
             while (next < indices.length) {
@@ -121,17 +158,43 @@ window.addEventListener("load", async () => {
         );
     }
 
+    // 현재 위치에서 가장 가까운 준비된 프레임 찾기
+    function nearestFrame(index) {
+        let nearest = -1;
+
+        for (let i = 0; i < FRAME_COUNT; i++) {
+            if (!frames[i]) continue;
+
+            if (
+                nearest === -1 ||
+                Math.abs(i - index) < Math.abs(nearest - index)
+            ) {
+                nearest = i;
+            }
+        }
+
+        return nearest;
+    }
+
     // 노트북 이미지 프레임 변경
     function showFrame(index) {
         const target = frameNumber(index);
         requestedFrame = target;
 
         if (frames[target]) {
-            if (currentFrame !== target) {
-                laptopImage.src = frames[target].src;
-                currentFrame = target;
-            }
-        } else if (!pending.has(target)) {
+            renderFrame(target);
+            return;
+        }
+
+        // 아직 로딩되지 않았다면 가까운 프레임 표시
+        const nearest = nearestFrame(target);
+
+        if (nearest !== -1) {
+            renderFrame(nearest);
+        }
+
+        // 필요한 프레임을 우선 요청
+        if (!pending.has(target)) {
             loadFrame(target).catch(error => {
                 console.warn(`프레임 ${target + 1} 로딩 실패`, error);
             });
@@ -182,16 +245,21 @@ window.addEventListener("load", async () => {
         measureHeader();
         window.addEventListener("resize", measureHeader);
 
-        // 첫 번째 이미지와 폰트만 준비
+        // 첫 번째 이미지와 폰트 준비
         await Promise.all([
             laptopImage.decode(),
             document.fonts.ready
         ]);
 
-        // HTML에 표시된 첫 이미지를 재사용
+        // HTML의 첫 번째 이미지를 재사용
         frames[0] = {
             src: laptopImage.currentSrc || laptopImage.src
         };
+
+        currentFrame = 0;
+
+        // 회전 애니메이션의 주요 프레임 준비
+        await preloadKeyFrames();
 
         measureTitle();
         showFrame(0);
@@ -347,13 +415,13 @@ window.addEventListener("load", async () => {
             }, 0.85);
         });
 
-        // 첫 화면 준비 완료 후 로딩 화면 종료
+        // 주요 프레임 준비 후 로딩 화면 종료
         hideLoader();
 
-        // 나머지 이미지는 페이지 표시 후 로딩
+        // 나머지 이미지는 백그라운드에서 로딩
         setTimeout(() => {
             preloadRemaining().catch(console.error);
-        }, 400);
+        }, 100);
 
     } catch (error) {
         showError(error);
